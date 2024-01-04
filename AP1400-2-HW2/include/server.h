@@ -1,10 +1,11 @@
 #ifndef SERVER_H
 #define SERVER_H
-#include<stdlib>
+#include<cstdlib>
 
 #include<map>
 #include<iostream>
 #include<string>
+#include<memory>
 
 #include "client.h"
 #include "crypto.h"
@@ -14,24 +15,25 @@ using std::endl;
 
 class Client;
 
- std::vector<std::string> pending_trxs;
+extern std::vector<std::string> pending_trxs;
 
 class Server
 {
 public:
 	Server();
+	std::map<std::shared_ptr<Client>,double> get_clients() const;
 	std::shared_ptr<Client> add_client(std::string id);
 	//This function will create a new Client with the specified id. If this id already exists, the server should add a random 4 digit number at the end of it automatically.
 	//::UPDATE:: each client should be assigned with 5 coins at the begining.
 	//note. do not use srand for your random numbers.
 
-	std::shared_ptr<Client> get_client(std::string id);
+	std::shared_ptr<Client> get_client(std::string id) const;
 	//Using this function you can get a pointer to a Client using its id.
 
 	double get_wallet(std::string id);
 	//Using this function will return the wallet value of the client with username id.
 
-	bool parse_trx(std::string trx, std::string sender, std::string receiver, double value);
+	bool parse_trx(std::string trx, std::string& sender, std::string& receiver, double& value);
 	//Each transaction has 3 properties: i) id of the sender ii) id of the receiver iii) value of money to transfer. We will show each transaction with a string, concatenating each of these properties with a -. For example if ali sends 1.5 coins to hamed the transaction will be shown by a string "ali-hamed-1.5". This function will parse this string format and outputting each property separately, if the string is not standard you should throw a runtime error.
 
 	bool add_pending_trx(std::string trx, std::string signature);

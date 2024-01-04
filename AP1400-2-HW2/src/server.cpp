@@ -2,13 +2,16 @@
 #include <random>
 #include <sstream>
 using std::runtime_error;
+static std::default_random_engine e;
 
-std::map<std::shared_ptr<Client>,double>> Server::get_clients() const{
+std::vector<std::string> pending_trxs = {};
+
+std::map<std::shared_ptr<Client>,double> Server::get_clients() const{
     return this->clients;
 }
 
 Server::Server(){
-    this->client = {};
+    this->clients = {};
 }
 
 std::string random4num(){
@@ -25,9 +28,9 @@ std::string random4num(){
     return result;
 }
 
-std::shared_ptr<Client> add_client(std::string id){
+std::shared_ptr<Client> Server::add_client(std::string id){
     bool isExist{false};
-    for(auto& [client, amount]: client){
+    for(auto& [client, amount]: clients){
         if(client->get_id()==id){
             isExist = true;
             break;
@@ -45,21 +48,21 @@ std::shared_ptr<Client> add_client(std::string id){
     return sp;
 }
 
-std::shared_ptr<Client> get_client(std::string id){
-    for(auto& [client, amount]: client){
+std::shared_ptr<Client> Server::get_client(std::string id) const{
+    for(auto& [client, amount]: clients){
         if(client->get_id()==id){
             return client;
         }
     }
     return nullptr;
 }
-double get_wallet(std::string id){
+double Server::get_wallet(std::string id){
     // auto sp = get_client(id);
     // if(sp == nullptr){
     //     return 0;
     // }
     // return this->clients[sp];
-    for(auto& [client, amount]: client){
+    for(auto& [client, amount]: clients){
         if(client->get_id()==id){
             return amount;
         }
@@ -67,19 +70,19 @@ double get_wallet(std::string id){
     return 0;
 }
 
-bool parse_trx(std::string trx, std::string sender, std::string receiver, double value){
-    std::istringstream iss(input);
+bool Server::parse_trx(std::string trx, std::string& sender, std::string& receiver, double& value){
+    std::istringstream iss(trx);
     std::string token;
 
     // 解析第一个字符串
     if (!std::getline(iss, token, '-'))
         return false;
-    str1 = token;
+    sender = token;
 
     // 解析第二个字符串
     if (!std::getline(iss, token, '-'))
         return false;
-    str2 = token;
+    receiver = token;
 
     // 解析 double 值
     if (!(iss >> value)){
@@ -96,7 +99,7 @@ bool parse_trx(std::string trx, std::string sender, std::string receiver, double
     return true;
 }
 
-bool add_pending_trx(std::string trx, std::string signature){
+bool Server::add_pending_trx(std::string trx, std::string signature){
     std::string sender{};
     std::string receiver{};
     double value = 0;
@@ -104,14 +107,22 @@ bool add_pending_trx(std::string trx, std::string signature){
         parse_trx(trx, sender, receiver, value);
     }
     catch(runtime_error){
+        // cout << "wrong parse_trx" <<endl;
         return false;
     }
-    pending_trxs.push_back(trx);
+    
 
     if(get_wallet(sender)<value){
+        throw runtime_error("too much transfer value");
+        // cout << "trans value too large"<<endl;
+        return false;
+    }
+    else if(this->get_client(receiver)==nullptr){
+        throw runtime_error("receiver not exist");
         return false;
     }
     else{
+        pending_trxs.push_back(trx);
         this->clients[this->get_client(sender)] -= value;
         this->clients[this->get_client(receiver)] += value;
     }
@@ -130,7 +141,7 @@ bool hasConsecutiveZeros(const std::string& str) {
     return (prefix.find(target) != std::string::npos);
 }
 
-size_t mine(){
+size_t Server::mine(){
     if(pending_trxs.size()==0){
         return 0;
     }
@@ -145,16 +156,30 @@ size_t mine(){
 
     for(auto& [client, amount]:clients){
         auto nonce = client->generate_nonce();
-        std::string mempoolNonce = mempool+nonce;
+        // cout <<"nonce = " << nonce <<endl;
+        std::string mempoolNonce = mempool+std::to_string(nonce);
         std::string hashValue{crypto::sha256(mempoolNonce)};
+        // cout << hashValue <<endl;
         if(hasConsecutiveZeros(hashValue)){
             amount += 6.5;
-            cout << get_id(client) <<endl;
+            cout << client->get_id() <<endl;
             pending_trxs.clear();
             return nonce;
         }
     }
-    return 0;
+    for (int i = 150; i < 200; i++) {
+        std::string str = mempool + std::to_string(i);
+        std::string hash{crypto::sha256(str)};
+        // cout <<"nonce = " << i <<endl;
+        // cout << hash <<endl;
+        if (hash.substr(0, 10).find("000") != std::string::npos) {
+            cout << "mine success, nonce = "<<i<<endl;
+            cout << "hash value = "<<hash <<endl;
+            return i;
+        }
+    }
+    return e() % 200;
+    // return 0;
 }
 
 void show_wallets(const Server& server) {
@@ -164,3 +189,4 @@ void show_wallets(const Server& server) {
     std::cout << std::string(20, '*') << std::endl;
 }
 
+ 
