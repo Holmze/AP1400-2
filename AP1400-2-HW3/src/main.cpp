@@ -7,7 +7,13 @@ int main(int argc, char **argv)
     if (true) // make false to run unit-tests
     {
         // debug section
-
+        BST bst{};
+        BST bst2{bst};
+        
+        // cout<<bst<<endl;
+        // cout<<bst2<<endl;
+        
+        // Node node{};
     }
     else
     {
