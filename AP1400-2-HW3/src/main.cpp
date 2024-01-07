@@ -10,12 +10,64 @@ int main(int argc, char **argv)
         BST bst{};
         // BST bst2{bst};
         // cout<<"create bst"<<endl;
-        bst.add_node(5);
-        // cout<<bst.get_root()->value<<endl;
-        bst.add_node(4);
-        bst.add_node(3);
+        // bst.add_node(5);
+        // bst.add_node(3);
+        // bst.add_node(8);
+        // bst.add_node(1);
+        // bst.add_node(4);
+        // bst.add_node(7);
+        // bst.add_node(9);
+        // bst.add_node(6);
+
         bst.add_node(2);
         bst.add_node(1);
+        bst.add_node(5);
+        bst.add_node(3);
+        bst.add_node(4);
+        bst.add_node(6);
+        // bst.add_node(6);
+        // bst.add_node(6);
+        // bst.add_node(6);
+        
+
+
+        // // BST::Node** target = bst.find_node(7);
+        // // BST::Node* target_node = *target;
+        // // cout << **bst.find_node(7) <<endl;
+        // // cout << target_node <<endl;
+        // // cout << *target <<endl;
+        // // cout << **target <<endl;
+        // cout << **bst.find_node(5) <<endl<<endl;
+        // cout << **bst.find_node(8) <<endl<<endl;
+        // cout << **bst.find_node(7) <<endl<<endl;
+        // cout << **bst.find_node(9) <<endl<<endl;
+        // // cout << **bst.find_node(7) <<endl;
+        // bst.bfs(printNodeValue);
+        // cout << bst.length()<<endl;
+        // cout << **bst.find_parrent(9) <<endl<<endl;
+        // cout << **bst.find_parrent(6) <<endl<<endl;
+
+        // cout << "successor of 5 is: "<<endl<<**bst.find_successor(5) <<endl<<endl;
+        // cout << "successor of 3 is: "<<endl<<**bst.find_successor(3) <<endl<<endl;
+        // cout << "successor of 8 is: "<<endl<<**bst.find_successor(8) <<endl<<endl;
+        // cout << "successor of 7 is: "<<endl<<**bst.find_successor(7) <<endl<<endl;
+        // // cout << "successor of 9 is: "<<endl<<**bst.find_successor(9) <<endl<<endl;
+        // // cout << "successor of 10 is: "<<endl<<**bst.find_successor(10) <<endl<<endl;
+        bst.bfs(printNodeValue);
+        cout <<endl;
+        bst.delete_node(6);
+        
+        bst.bfs(printNodeValue);
+        cout <<endl;
+        
+        bst.delete_node(2);
+        
+        bst.bfs(printNodeValue);
+        cout <<endl;
+        
+        // bst.find_node(10);
+        
+        
         // cout << bst.get_root()->value << endl;
         // cout<<bst<<endl;
         // cout<<bst2<<endl;
