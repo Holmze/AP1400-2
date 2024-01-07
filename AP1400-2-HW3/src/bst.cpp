@@ -29,21 +29,52 @@ ostream& operator<<(ostream& os, const BST::Node node){
     return os;
 }
 
+ostream& operator<<(ostream& os, BST bst){
+    os<<"********************************************************************************\n";
+    ///////////////////////////////////
+    std::queue<BST::Node*> bfsQueue;
+    if(bst.get_root()!=nullptr){
+        bfsQueue.push(bst.get_root());
+    }
+
+    while(!bfsQueue.empty()){
+        BST::Node* current = bfsQueue.front();
+        bfsQueue.pop();
+
+        // func(current);
+        // os << current <<"   ==> value:" << current->value << "    left:"<< current->left << "  right:"<< current->right<<"\n";
+        os<< std::setw(10) << current << "   ==> value: " << current->value
+              << "    left: " << std::setw(16) << current->left
+              << "  right: " << std::setw(16) << current->right << "\n";
+
+        if(current->left!=nullptr){
+            bfsQueue.push(current->left);
+        }
+        if(current->right!=nullptr){
+            bfsQueue.push(current->right);
+        }
+    }
+    ///////////////////////////////////
+    os<<"binary search tree size: "<<bst.length()<<"\n";
+    os<<"********************************************************************************\n";
+    return os;
+}
+
 // ==, <, <=, >, >= operators
-bool operator==(const BST::Node node, const int num){return node.value==num;}
-bool operator==(const int num,const BST::Node node){return node.value==num;}
+bool operator==(const BST::Node& node, const int& num){return node.value==num;}
+bool operator==(const int& num,const BST::Node& node){return node.value==num;}
 
-bool operator<(const BST::Node node, const int num){return node.value<num;}
-bool operator<(const int num, const BST::Node node){return num<node.value;}
+bool operator<(const BST::Node& node, const int& num){return node.value<num;}
+bool operator<(const int& num, const BST::Node& node){return num<node.value;}
 
-bool operator<=(const BST::Node node,const int num){return node.value<=num;}
-bool operator<=(const int num, const BST::Node node){return num<=node.value;}
+bool operator<=(const BST::Node& node,const int& num){return node.value<=num;}
+bool operator<=(const int& num, const BST::Node& node){return num<=node.value;}
 
-bool operator>(const BST::Node node, const int num){return node.value>num;}
-bool operator>(const int num, const BST::Node node){return num>node.value;}
+bool operator>(const BST::Node& node, const int& num){return node.value>num;}
+bool operator>(const int& num, const BST::Node& node){return num>node.value;}
 
-bool operator>=(const BST::Node node,const int num){return node.value>=num;}
-bool operator>=(const int num, const BST::Node node){return num>=node.value;}
+bool operator>=(const BST::Node& node,const int& num){return node.value>=num;}
+bool operator>=(const int& num, const BST::Node& node){return num>=node.value;}
 
 BST::BST(){
     this->root = nullptr;
@@ -60,6 +91,7 @@ BST::Node* copyTree(BST::Node* root){
 }
 
 BST::BST(const BST& b){
+    // cout << "BST1"<<endl;
     if(b.root ==nullptr){
         this->root = nullptr;
     }
@@ -75,36 +107,26 @@ BST::BST(const BST& b){
 }
 
 BST::BST(BST&& b){
+    // cout << "BST2"<<endl;
     this->root = b.root;
     b.root = nullptr;
 }
 
 void BST::deleteNode(Node* node) {
-    auto pre = find_parrent(node->value);
-    // cout << **pre<<endl;
-    if((*pre)->left!=nullptr&&(*pre)->left==node){
-        (*pre)->left = nullptr;
-    }
-    // cout << "1"<<endl;
-    // else if((*pre)->left==node){
+    // auto pre = find_parrent(node->value);
+    // if((*pre)->left!=nullptr&&(*pre)->left==node){
     //     (*pre)->left = nullptr;
     // }
-    if((*pre)->right != nullptr&&(*pre)->right==node){
-        (*pre)->right = nullptr;
-    }
-    // cout << "2"<<endl;
-    
-    // else if((*pre)->right == node){
+    // if((*pre)->right != nullptr&&(*pre)->right==node){
     //     (*pre)->right = nullptr;
     // }
+    
     if (node) {
-        // cout << "3"<<endl;
-        if(node->left!=nullptr) deleteNode(node->left);   // 递归删除左子树
-        // cout << "4"<<endl;
-        if(node->right!=nullptr) deleteNode(node->right);  // 递归删除右子树
-        // cout << "5"<<endl;
+        // if(node->left!=nullptr) 
+        deleteNode(node->left);   // 递归删除左子树
+        // if(node->right!=nullptr) 
+        deleteNode(node->right);  // 递归删除右子树
         delete node;              // 删除当前节点
-        // cout << "6"<<endl;
     }
 }
 
@@ -196,7 +218,7 @@ bool BST::add_node(int value){
             nodeRef = nodeRef->left;
         }
         else{
-            throw runtime_error("node is already exist!");
+            // throw runtime_error("node is already exist!");
             return false;
         }
 
@@ -240,10 +262,10 @@ bool BST::add_node(int value){
         // cout << ", new root = "<<this->root->value<<endl;
     }
     else{
-        throw runtime_error("node is already exist!");
+        // throw runtime_error("node is already exist!");
         return false;
     }
-    cout << endl;
+    // cout << endl;
     return true;
 }
 BST::Node** BST::find_node(int value){
@@ -260,7 +282,7 @@ BST::Node** BST::find_node(int value){
             current = &((*current)->left);
         }
     }
-    throw runtime_error("404 Not FOUND");
+    // throw runtime_error("404 Not FOUND");
     return nullptr;
 }
 BST::Node** BST::find_parrent(int value){
@@ -330,14 +352,16 @@ BST::Node** BST::find_parrent(int value){
 }
 BST::Node** BST::find_successor(int value){
     // auto current = find_node(value);
-    Node** current = nullptr;
-    try{
-        current = find_node(value);    
-    }
-    catch(runtime_error){
-        throw runtime_error("Not EXIST, NO successor! ");
-        return nullptr;
-    }
+    Node** current = find_node(value);
+    if(current==nullptr) return nullptr;
+    // nullptr;
+    // try{
+    //     current = find_node(value);    
+    // }
+    // catch(runtime_error){
+        // throw runtime_error("Not EXIST, NO successor! ");
+    //     return nullptr;
+    // }
     // if(current == nullptr){
     //     throw runtime_error("Not EXIST, NO successor! ");
     //     return nullptr;
@@ -354,65 +378,141 @@ BST::Node** BST::find_successor(int value){
     }
     else{
         //select min value of right subtree
-        current = &((*current)->right);
-        while((*current)->left!=nullptr){
-            current = &((*current)->left);
+        current = &((*current)->left);
+        while((*current)->right!=nullptr){
+            current = &((*current)->right);
         }
         return current;
     }
 }
 bool BST::delete_node(int value){
+    //NOTE: 删除操作节点地址不能做修改，只能改变指针！
     if(find_node(value)==nullptr){
-        throw runtime_error("Value not exist");
+        // throw runtime_error("Value not exist");
         return false;
     }
     if(find_successor(value)==nullptr){
-        // auto pre = find_parrent(value);
-        // if((*pre)->left==nullptr){
-        //     (*pre)->right= nullptr;
-        // }
-        // // else if((*pre)->right==nullptr){
-        // else{
-        //     (*pre)->left=nullptr;
-        // }
-        // else{
-        //     if((*pre)->left==*find_node(value)){
-        //         (*pre)->left = nullptr;
-        //     }
-        //     else{
-        //         (*pre)->right = nullptr;
-        //     }
-        // }
         deleteNode(*find_node(value));
         return true;
     }
     else{
-        auto current = find_node(value);
-        auto successor = find_successor(value);
-        // int tmp = (*current)->value;
-        // auto pre = find_parrent((*successor)->value);
-        // cout <<"current is "<< **current <<endl;
-        // cout <<"succ is "<< **successor <<endl;
-        // cout <<"pre is "<< **pre <<endl;
-        int tmp_value = (*successor)->value;
-        delete_node(tmp_value);
-        (*current)->value = tmp_value;
-        // if((*pre)->right == nullptr){
-        //     (*pre)->left = nullptr;
-        // }
-        // else if((*pre)->right==*successor){
-        //     (*pre)->right = nullptr;
-        // }
-        // if((*pre)->left == nullptr){
-        //     (*pre)->right = nullptr;
-        // }
-        // else if((*pre)->left==*successor){
-        //     (*pre)->left = nullptr;
-        // }
-        // (*current)->value = (*successor)->value;
-        // (*successor)->value = tmp;
-        // deleteNode(find_node(value));
-        
-        // delete *successor;
+        /*old version: 修改节点的值，递归实现，释放掉最后一个叶子结点*/
+        // auto current = find_node(value);
+        // auto successor = find_successor(value);
+        // int tmp_value = (*successor)->value;
+        // delete_node(tmp_value);
+        // (*current)->value = tmp_value;
+
+        /*new version: 只操作ptr*/
+        //case1 left or right = nullptr
+        auto current = *find_node(value);
+        // cout << *current <<endl;
+        if(current->left==nullptr){
+            auto pre = *find_parrent(value);
+            if(pre->left!=nullptr&&pre->left==current){
+                pre->left = *find_successor(value);
+            }
+            if(pre->right!=nullptr&&pre->right==current){
+                pre->right = *find_successor(value);
+            }
+        }
+        else if(current->right==nullptr){
+            // cout << "right is null"<<endl;
+            auto pre = *find_parrent(value);
+            // cout << *pre<<endl;
+            if(pre->left!=nullptr&&pre->left==current){
+                pre->left = *find_successor(value);
+            }
+            if(pre->right!=nullptr&&pre->right==current){
+                pre->right = *find_successor(value);
+            }
+        }
+        //case2 left and right != nullptr
+        else{
+            auto successor = *find_successor(value);
+            // cout<<*successor<<endl;
+            auto succ_pre = *find_parrent(successor->value);
+            // cout <<*succ_pre <<endl;
+            auto curr_pre = *find_parrent(value);
+            // cout <<*curr_pre <<endl;
+            // step1 curr_pre->succ
+            if(curr_pre->left!=nullptr&&curr_pre->left==current){
+                curr_pre->left = successor;
+            }
+            if(curr_pre->right!=nullptr&&curr_pre->right==current){
+                curr_pre->right = successor;
+            }
+            // step2 succ_pre->nullptr
+            if(succ_pre->left!=nullptr&&succ_pre->left==successor){
+                succ_pre->left == nullptr;
+            }
+            if(succ_pre->right!=nullptr&&succ_pre->right==successor){
+                succ_pre->right == nullptr;
+            }
+            // step3 ? succ_pre->succ_succ
+            if(successor->left!=nullptr){
+                // auto succ_succssor = successor->left;
+                // succ_pre->right = succ_succssor;
+                succ_pre->right = successor->left;
+            }
+            cout << "succ_pre" <<endl;
+            cout << *this<<endl;
+            
+            // cout << *this <<endl;
+            //step4 & 5 fix succ->left&right
+            cout << *current<<endl;
+            cout << *successor <<endl;
+            successor->left = current->left;
+            successor->right = current->right;
+            cout << *this <<endl;
+            // current->left = nullptr;
+            // current->right = nullptr;
+            delete current;
+        }
     }
+    return true;
+}
+
+void xpplus(BST::Node*& node) {
+    node->value++;
+}
+
+void pplusx(BST::Node*& node){
+    ++node->value;
+}
+
+BST& BST::operator++(){
+    //++i
+    bfs(pplusx);
+    return *this;
+}
+BST BST::operator++(int){
+    //i++
+    BST newBst = BST(*this);
+    bfs(xpplus);
+    return newBst;
+}
+
+BST::BST(std::initializer_list<int> values) : root(nullptr) {
+    for (int value : values) {
+        insert(value);
+    }
+}
+
+void BST::insert(int value) {
+    root = insertRecursive(root, value);
+}
+
+BST::Node* BST::insertRecursive(BST::Node* node, int value) {
+    if (node == nullptr) {
+        return new Node(value,nullptr,nullptr);
+    }
+
+    if (value < node->value) {
+        node->left = insertRecursive(node->left, value);
+    } else if (value > node->value) {
+        node->right = insertRecursive(node->right, value);
+    }
+
+    return node;
 }

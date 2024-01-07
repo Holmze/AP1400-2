@@ -7,6 +7,10 @@
 #include <ostream>
 #include <queue>
 #include <vector>
+#include <iomanip>
+#include <initializer_list>
+
+
 
 using std::cout;
 using std::endl;
@@ -32,7 +36,7 @@ public:
     BST(const BST& b);  // copy constructor
     BST(BST&& b);       // move constructor
     ~BST();             // destructor
-    // BST(std::initializer_list<int> list);
+    BST(std::initializer_list<int> list);
     void deleteNode(Node* node);
     Node*& get_root();
     void bfs(std::function<void(Node*& node)> func);
@@ -44,15 +48,18 @@ public:
     bool delete_node(int value);
 
     friend ostream& operator<<(ostream& os, BST b);
-    // BST& operator++();
-    // BST operator++(int);
+    BST& operator++();//op++
+    BST operator++(int);//++op
 
     BST& operator=(BST& b);
     BST& operator=(BST&& b);
+    Node* insertRecursive(Node* node, int value);
+    void insert(int value);
 
 private:
     
     Node* root;
+    
 };
 
 ostream& operator<<(ostream& os, BST::Node node);
