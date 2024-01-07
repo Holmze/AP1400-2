@@ -10,6 +10,7 @@ using std::cout;
 using std::endl;
 using std::ostream;
 using std::queue;
+// using std::runtime_error;
 class BST
 {
 public:
@@ -31,13 +32,13 @@ public:
     // BST(std::initializer_list<int> list);
     void deleteNode(Node* node);
     Node*& get_root();
-    void bfs(std::function<void(Node*& node)> func);
-    size_t length();
+    // void bfs(std::function<void(Node*& node)> func);
+    // size_t length();
     bool add_node(int value);
-    Node** find_node(int value);
-    Node** find_parrent(int value);
-    Node** find_successor(int value);
-    bool delete_node(int value);
+    // Node** find_node(int value);
+    // Node** find_parrent(int value);
+    // Node** find_successor(int value);
+    // bool delete_node(int value);
 
     friend ostream& operator<<(ostream& os, BST b);
     // BST& operator++();

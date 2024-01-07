@@ -8,8 +8,15 @@ int main(int argc, char **argv)
     {
         // debug section
         BST bst{};
-        BST bst2{bst};
-        
+        // BST bst2{bst};
+        // cout<<"create bst"<<endl;
+        bst.add_node(5);
+        // cout<<bst.get_root()->value<<endl;
+        bst.add_node(4);
+        bst.add_node(3);
+        bst.add_node(2);
+        bst.add_node(1);
+        // cout << bst.get_root()->value << endl;
         // cout<<bst<<endl;
         // cout<<bst2<<endl;
         
