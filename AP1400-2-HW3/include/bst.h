@@ -79,4 +79,5 @@ bool operator>(const BST::Node& node, const int& num);
 bool operator>=(const int& num, const BST::Node& node);
 bool operator>=(const BST::Node& node, const int& num);
 void printNodeValue(BST::Node*& node);
+void printNode(BST::Node*& node);
 #endif //BST_H

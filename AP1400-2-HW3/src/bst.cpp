@@ -161,6 +161,11 @@ void printNodeValue(BST::Node*& node) {
     std::cout << "Node value: " << node->value << std::endl;
 }
 
+void printNode(BST::Node*& node) {
+    std::cout << "Node: " << node << "Node value: " << node->value << std::endl;
+}
+
+
 void BST::bfs(std::function<void(Node*& node)> func){
     std::queue<Node*> bfsQueue;
     if(this->root!=nullptr){
@@ -392,7 +397,24 @@ bool BST::delete_node(int value){
         return false;
     }
     if(find_successor(value)==nullptr){
-        deleteNode(*find_node(value));
+        cout << "delete leaf"<<endl;
+        auto current = *find_node(value);
+        auto curr_pre = *find_parrent(value);
+        if(curr_pre->left!=nullptr){
+            // cout << "left leaf"<<endl;
+            if(curr_pre->left->value == value){
+                curr_pre->left = nullptr;
+            }
+        }
+        if(curr_pre->right!=nullptr){
+            // cout << "right leaf"<<endl;
+            if(curr_pre->right->value == value){
+                // cout << "delete it"<<endl;
+                curr_pre->right = nullptr;
+            }
+        }
+        delete current;
+        // deleteNode(*find_node(value));
         return true;
     }
     else{
@@ -430,43 +452,68 @@ bool BST::delete_node(int value){
         //case2 left and right != nullptr
         else{
             auto successor = *find_successor(value);
+            // cout << "successor: " << endl;
             // cout<<*successor<<endl;
+            // cout<<**find_successor(value)<<endl;
             auto succ_pre = *find_parrent(successor->value);
+            // cout << "succ_pre: " << endl;
             // cout <<*succ_pre <<endl;
             auto curr_pre = *find_parrent(value);
             // cout <<*curr_pre <<endl;
-            // step1 curr_pre->succ
-            if(curr_pre->left!=nullptr&&curr_pre->left==current){
-                curr_pre->left = successor;
-            }
-            if(curr_pre->right!=nullptr&&curr_pre->right==current){
-                curr_pre->right = successor;
-            }
+            // cout << "brfore delete: " << endl;
+            // cout << *this << endl;
             // step2 succ_pre->nullptr
-            if(succ_pre->left!=nullptr&&succ_pre->left==successor){
-                succ_pre->left == nullptr;
+            // cout <<  << endl;
+            if(succ_pre->left!=nullptr){
+                // cout << succ_pre->left->value <<"=?"<<successor->value<< endl;
+                if(succ_pre->left->value==successor->value)
+                // succ_pre->left == nullptr;//FUCK!!!
+                succ_pre->left = nullptr;
             }
-            if(succ_pre->right!=nullptr&&succ_pre->right==successor){
-                succ_pre->right == nullptr;
+            if(succ_pre->right!=nullptr){
+                cout << succ_pre->right->value <<"=?"<<successor->value<<endl;
+                if(succ_pre->right->value==successor->value){
+                    // succ_pre->right == nullptr; //FUCK!!!
+                    succ_pre->right = nullptr;
+                    // cout << *succ_pre <<endl<<endl;
+                    // cout << **find_parrent(successor->value)<<endl;
+                }
             }
+            // cout << "step2, succ_pre->nullptr " << endl;
+            // cout << *this << endl;
+            // step1 curr_pre->succ
+            // cout << current->value<<"=?"<<this->root->value<<endl;
+            if(current->value!=this->root->value){
+                //delete no-root
+                if(curr_pre->left!=nullptr&&curr_pre->left->value==current->value){
+                    curr_pre->left = successor;
+                }
+                if(curr_pre->right!=nullptr&&curr_pre->right->value==current->value){
+                    curr_pre->right = successor;
+                }
+                // cout << *this << endl;
+            }
+            else{
+                this->root = successor;
+            }
+            
             // step3 ? succ_pre->succ_succ
             if(successor->left!=nullptr){
+                cout << "succ has left subtree"<<endl;
                 // auto succ_succssor = successor->left;
                 // succ_pre->right = succ_succssor;
                 succ_pre->right = successor->left;
+                successor->left = nullptr;
             }
-            cout << "succ_pre" <<endl;
-            cout << *this<<endl;
-            
+            // cout << *this<<endl;
             // cout << *this <<endl;
             //step4 & 5 fix succ->left&right
-            cout << *current<<endl;
-            cout << *successor <<endl;
+            
             successor->left = current->left;
             successor->right = current->right;
-            cout << *this <<endl;
-            // current->left = nullptr;
-            // current->right = nullptr;
+            // cout << *this <<endl;
+            current->left = nullptr;
+            current->right = nullptr;
             delete current;
         }
     }
