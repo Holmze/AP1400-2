@@ -22,7 +22,27 @@ int main(int argc, char **argv)
         cout << sides[0] <<endl;
         cout << sides.size() <<endl;
 
+        Mocha mocha{};
+        cout << mocha.get_name() << endl;
+        // EXPECT_EQ(mocha.get_name(), "Mocha");
+        auto ingredients = mocha.get_ingredients();
+        cout << ingredients.size() <<endl;
+        // EXPECT_EQ(ingredients.size(), 4);
+        for(const auto& i : ingredients)
+            cout << i->get_name() <<endl;
+            // EXPECT_TRUE(i->get_name() == "Espresso" || i->get_name() == "Milk" || i->get_name() == "MilkFoam" || i->get_name() == "Chocolate");
+        cout << mocha.price() <<endl;
+        // EXPECT_DOUBLE_EQ(mocha.price(), 60);
 
+        EspressoBased* esp{new Mocha{}};
+        reinterpret_cast<Cappuccino*>(esp)->add_side_item(new Cookie{1});
+        reinterpret_cast<Cappuccino*>(esp)->add_side_item(new Sugar{2});
+        std::vector<Ingredient*>& sides = reinterpret_cast<Cappuccino*>(esp)->get_side_items();
+        cout << sides.size() <<endl;
+        // EXPECT_EQ(sides.size(), 2);
+        delete esp;
+        cout << sides.size() <<endl;
+        // EXPECT_EQ(sides.size(), 0);
         // Cappuccino cappuccino;
         // cappuccino.add_side_item(new Chocolate{2});
         // Cappuccino copy{cappuccino};
