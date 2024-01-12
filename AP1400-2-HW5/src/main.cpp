@@ -16,9 +16,22 @@ int main(int argc, char **argv)
         EspressoBased* esp{new Cappuccino{}};
         reinterpret_cast<Cappuccino*>(esp)->add_side_item(new Cookie{1});
         std::vector<Ingredient*>& sides = reinterpret_cast<Cappuccino*>(esp)->get_side_items();
+        cout << sides[0] <<endl;
         cout << sides.size() <<endl;
         delete esp;
+        cout << sides[0] <<endl;
         cout << sides.size() <<endl;
+
+
+        // Cappuccino cappuccino;
+        // cappuccino.add_side_item(new Chocolate{2});
+        // Cappuccino copy{cappuccino};
+        // cout << copy.get_name() <<endl;
+        // cout << copy.price()<<endl;
+        // cout << cappuccino.get_side_items()[0] <<endl;
+        // cout << copy.get_side_items()[0] <<endl;
+
+
         // cout << "2" <<endl;
         // Cappuccino cappuccino;
         // cappuccino.add_side_item(new Chocolate{2});

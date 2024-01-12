@@ -19,9 +19,10 @@ public:
         this->get_ingredients().push_back(new Milk{2});
         this->get_ingredients().push_back(new MilkFoam{1});
         this->get_ingredients().push_back(new Chocolate{1});
-        
+        this->side_items = std::vector<Ingredient*>{};
     };
-    Mocha(const Mocha& cap):side_items(cap.side_items){};
+    Mocha(const Mocha& cap);
+    // Mocha(const Mocha& cap):side_items(cap.side_items){};
 
 	~Mocha();
     void operator=(const Mocha& cap);

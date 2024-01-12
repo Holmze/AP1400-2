@@ -18,8 +18,10 @@ public:
         this->get_ingredients().push_back(new Espresso{2});
         this->get_ingredients().push_back(new Milk{2});
         this->get_ingredients().push_back(new MilkFoam{1});
+        this->side_items = std::vector<Ingredient*>{};
     };
-    Cappuccino(const Cappuccino& cap):side_items(cap.side_items){};
+    Cappuccino(const Cappuccino& cap);
+    // Cappuccino(const Cappuccino& cap):side_items(cap.side_items){};
 
 	~Cappuccino();
     void operator=(const Cappuccino& cap);
